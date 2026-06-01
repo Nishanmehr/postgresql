@@ -8,12 +8,6 @@ where we can connect tables to each other and uses SQL for managing and querying
 Structured Query Language
 Which is used to talk to our databases.
 
-# Queries 
-#### =>>SHOW ALL EXISTING DB
-```javascript
-SELECT datname FROM pg_database;
-```
-
 ### Some Important Queries in SQL SHELL
 ``` javascript
 \l         - list all databases
@@ -26,6 +20,9 @@ SELECT datname FROM pg_database;
 ```
 #### IMPORTANT QUERY
 ``` javascript
+//SHOW ALL EXISTING DB
+SELECT datname FROM pg_database;
+
 // CREATE DB
 CREATE DATABASE <db_name>;
 
@@ -66,9 +63,9 @@ UPDATE tbname SET contact = 1234 WHERE ID = 01;
 // DELETE
 DELETE FROM tbname WHERE ID = 104;
 
-// PRIMARY KEY / DEFAULT /NOT NULL
+// PRIMARY KEY / DEFAULT /NOT NULL/ AUTO INCREAMENT
 CREATE TABLE person ( 
-  id INT PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   city VARCHAR(100) NOT NULL,
 SALARY VARCHAR(100) NOT NULL DEFAULT = 25000
