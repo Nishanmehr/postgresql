@@ -72,7 +72,20 @@ SALARY VARCHAR(100) NOT NULL DEFAULT = 25000
 ); 
 ```
   
+## CLAUSE
+Giving some conditions With SQL Queries called clause.
 
+``` javascript
+
+// WHERE CLAUSE
+SELECT * FROM tablename
+WHERE salary < 20000;
+
+/* DISTICT
+IT IS USED TO SHOW UNIQUE DATA FROM TABLE INSTEAD OF DUPPLICATW
+*/
+
+SELECT DISTINCT dept FROM tbname;
 
 
 
