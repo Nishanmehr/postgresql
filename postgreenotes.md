@@ -183,7 +183,100 @@ REPLACE(str, from_str, to_str)
 REPLACE('Hey Buddy', 'Hey', 'Hello')
 
 Result: Hello Buddy
+
+// REVERSE - it is used to reverse the string name etc.
+SELECT REVERSE('Hello');
+
+Result: olleH
+
+
+// LENGTH - used to calculate the length of string.
+Select LENGTH('Hello World');
+
+Result: 11.
+
+// UPPER & LOWER
+SELECT UPPER('Hello World');
+
+SELECT LOWER('Hello World');
+
+// LEFT - IT IS USED TO SEE THE LEFT SIDE DATA OF STRING
+SELECT LEFT('Abcdefghij', 3);
+
+Result: Abc
+
+// RIGHT - IT IS USED TO SEE THE RIGHT SIDE DATA OF STRING
+SELECT RIGHT('Abcdefghij', 4);
+
+Result: ghij
+
+// TRIM - used to remove the side and extra space from a string.
+SELECT TRIM('  Alright!  '); 
+
+// POSITION -use to see the position of text or letter.
+SELECT POSITION('OM' in ‘Thomas’);
+
+Result: 3
 ```
+### ALTER TABLE
+``` java
+// to rename a column name
+ALTER TABLE tb_name
+RENAME COLUMN name TO full_name;
+
+// to rename a  table name
+RENAME TABLE contract TO mycontract;
+
+// to add or remove a column
+ALTER TABLE tb_name
+ADD COLUMN city VARCHAR(100);
+
+ALTER TABLE tb_name
+DROP COLUMN city:
+
+
+// to modify a column- Changing data types and the values.
+ALTER TABLE tb_name
+ALTER COLUMN fname
+SET DATA TYPE VARCHAR(150);
+
+//
+ALTER TABLE tb_name
+ALTER COLUMN fname
+SET NOT NULL;
+```
+
+### CHECK CONSTRAINT - its used to add restriction based on some condition 
+``` java
+// We want to make sure phone no. is atleast 10 digits...
+CREATE TABLE tb_name(
+name VARCHAR(50),
+mob VARCHAR(15) CHECK (LENGTH (mob) >=10));
+
+// TO DELETE IT
+ALTER TABLE tb_name
+DROP CONNSTRAINT mob;
+
+// Here contraint is used to show the error or msg if user enter the wrong value 
+CREATE TABLE tb_name
+ADD CONTRAINT mob_num_less_than_10_digits CHECK (LENGTH (mob) >=10));
+
+```
+### CASE - use to create a separate comun with some value on condition 
+``` java
+SELECT fname, salary,
+CASE WHEN salary >= THEN 'High' ELSE 'Low'
+ENS AS sal_cat FROM employee/tb_name;
+
+
+SELECT fname, salary,
+CASE WHEN salary >=50000 THEN 'High'
+WHEN salary BETWEEN 40000 AND 50000 THEN 'Mid' ELSE 'Low'
+ENS AS sal_cat FROM employee/tb_name;
+```
+
+
+
 
 
 
