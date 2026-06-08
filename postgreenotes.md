@@ -9,7 +9,7 @@ Structured Query Language
 Which is used to talk to our databases.
 
 ### Some Important Queries in SQL SHELL
-``` javascript
+``` sql
 \l         - list all databases
 \q         - quit
 \c db_name - connect to database
@@ -19,7 +19,7 @@ Which is used to talk to our databases.
 \! cls.    - list all column
 ```
 #### IMPORTANT QUERY
-``` javascript
+``` sql
 //SHOW ALL EXISTING DB
 SELECT datname FROM pg_database;
 
@@ -75,7 +75,7 @@ SALARY VARCHAR(100) NOT NULL DEFAULT = 25000
 ## CLAUSE
 Giving some conditions With SQL Queries called clause.
 
-``` javascript
+``` sql
 
 // WHERE CLAUSE
 SELECT * FROM tablename
@@ -138,7 +138,7 @@ SELECT dept, COUNT(fname) FROM employees GROUP BY dept;
 ### AGREGATE FUNCTIONS
 function which perform some operation on table called agregate function.
 
-``` javascript
+``` sql
 // COUNT
 SELECT COUNT(user_id) FROM employees;
 
@@ -159,7 +159,7 @@ SELECT AVG(salary) FROM employees;
 
 ```
 ### STRING FUNCTIONS 
-``` javascript
+``` sql
 /* CONCAT - IT IS USED TO COMBINE TWO TABLE
 AND SHOW A NEW TABLE WITH COMBINATION OF TWO TABLE*/
 CONCAT(first_col, sec_col) 
@@ -219,7 +219,7 @@ SELECT POSITION('OM' in ‘Thomas’);
 Result: 3
 ```
 ### ALTER TABLE
-``` java
+``` sql
 // to rename a column name
 ALTER TABLE tb_name
 RENAME COLUMN name TO full_name;
@@ -247,7 +247,7 @@ SET NOT NULL;
 ```
 
 ### CHECK CONSTRAINT - its used to add restriction based on some condition 
-``` java
+``` sql
 // We want to make sure phone no. is atleast 10 digits...
 CREATE TABLE tb_name(
 name VARCHAR(50),
@@ -263,7 +263,7 @@ ADD CONTRAINT mob_num_less_than_10_digits CHECK (LENGTH (mob) >=10));
 
 ```
 ### CASE - use to create a separate comun with some value on condition 
-``` java
+``` sql
 SELECT fname, salary,
 CASE WHEN salary >= THEN 'High' ELSE 'Low'
 ENS AS sal_cat FROM employee/tb_name;
@@ -274,7 +274,301 @@ CASE WHEN salary >=50000 THEN 'High'
 WHEN salary BETWEEN 40000 AND 50000 THEN 'Mid' ELSE 'Low'
 ENS AS sal_cat FROM employee/tb_name;
 ```
+## RELATIONSHIPS IN DATABASE
 
+Relationship means connecting one table with another table using keys.
+
+### Types of Relationships
+
+1. One To One (1:1)
+2. One To Many (1:N)
+3. Many To One (N:1)
+4. Many To Many (M:N)
+
+---
+
+## FOREIGN KEY
+
+Foreign Key is used to connect two tables.
+
+It creates a relationship between parent table and child table.
+
+### Syntax
+
+```sql
+CREATE TABLE department(
+    dept_id SERIAL PRIMARY KEY,
+    dept_name VARCHAR(100)
+);
+
+CREATE TABLE employee(
+    emp_id SERIAL PRIMARY KEY,
+    emp_name VARCHAR(100),
+    dept_id INT,
+    FOREIGN KEY(dept_id)
+    REFERENCES department(dept_id)
+);
+```
+
+## ONE TO ONE RELATIONSHIP (1:1)
+
+One record from Table A can be connected with only one record from Table B.
+
+### Example
+
+Every person has only one passport.
+
+```sql
+CREATE TABLE person(
+    person_id INT PRIMARY KEY,
+    name VARCHAR(50)
+);
+
+CREATE TABLE passport(
+    passport_id INT PRIMARY KEY,
+    person_id INT UNIQUE,
+    FOREIGN KEY(person_id)
+    REFERENCES person(person_id)
+);
+```
+---
+
+## ONE TO MANY RELATIONSHIP (1:N)
+
+One record from parent table can have many records in child table.
+
+### Example
+
+One department can have many employees.
+
+```sql
+DEPARTMENT
+-----------
+IT
+HR
+
+EMPLOYEE
+-----------
+Rahul -> IT
+Aman  -> IT
+Rohit -> HR
+```
+
+```sql
+CREATE TABLE department(
+    dept_id INT PRIMARY KEY,
+    dept_name VARCHAR(50)
+);
+
+CREATE TABLE employee(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(50),
+    dept_id INT,
+    FOREIGN KEY(dept_id)
+    REFERENCES department(dept_id)
+);
+```
+
+## MANY TO MANY RELATIONSHIP (M:N)
+
+Many records from Table A can connect with many records from Table B.
+
+### Example
+
+Students and Courses
+
+One student can enroll in many courses.
+
+One course can have many students.
+
+To implement this relationship we create a Junction Table (Bridge Table).
+
+```sql
+CREATE TABLE students(
+    student_id INT PRIMARY KEY,
+    student_name VARCHAR(50)
+);
+
+CREATE TABLE courses(
+    course_id INT PRIMARY KEY,
+    course_name VARCHAR(50)
+);
+
+CREATE TABLE student_course(
+    student_id INT,
+    course_id INT,
+
+    PRIMARY KEY(student_id, course_id),
+
+    FOREIGN KEY(student_id)
+    REFERENCES students(student_id),
+
+    FOREIGN KEY(course_id)
+    REFERENCES courses(course_id)
+);
+```
+
+### Sample Data
+
+```sql
+INSERT INTO students VALUES
+(1,'Rahul'),
+(2,'Aman');
+
+INSERT INTO courses VALUES
+(101,'Java'),
+(102,'SQL');
+
+INSERT INTO student_course VALUES
+(1,101),
+(1,102),
+(2,101);
+```
+
+### Output
+
+```text
+Rahul -> Java
+Rahul -> SQL
+Aman  -> Java
+```
+
+---
+
+# JOINS
+
+Join is used to combine data from multiple tables based on a common column.
+
+---
+
+## INNER JOIN
+
+Returns only matching records from both tables.
+
+```sql
+SELECT e.emp_name,
+       d.dept_name
+FROM employee e
+INNER JOIN department d
+ON e.dept_id = d.dept_id;
+```
+
+### Output
+
+```text
+Rahul   IT
+Aman    HR
+```
+
+---
+
+## LEFT JOIN
+
+Returns all records from left table and matching records from right table.
+
+```sql
+SELECT e.emp_name,
+       d.dept_name
+FROM employee e
+LEFT JOIN department d
+ON e.dept_id = d.dept_id;
+```
+
+### Output
+
+```text
+Rahul   IT
+Aman    HR
+Rohit   NULL
+```
+
+---
+
+## RIGHT JOIN
+
+Returns all records from right table and matching records from left table.
+
+```sql
+SELECT e.emp_name,
+       d.dept_name
+FROM employee e
+RIGHT JOIN department d
+ON e.dept_id = d.dept_id;
+```
+
+---
+
+## FULL OUTER JOIN
+
+Returns all records from both tables.
+
+```sql
+SELECT e.emp_name,
+       d.dept_name
+FROM employee e
+FULL OUTER JOIN department d
+ON e.dept_id = d.dept_id;
+```
+
+---
+
+## CROSS JOIN
+
+Returns Cartesian Product.
+
+Every row of first table is combined with every row of second table.
+
+```sql
+SELECT *
+FROM employee
+CROSS JOIN department;
+```
+
+### Example
+
+```text
+EMPLOYEE = 3 Rows
+DEPARTMENT = 2 Rows
+
+RESULT = 3 × 2 = 6 Rows
+```
+
+---
+
+## SELF JOIN
+
+A table joined with itself.
+
+### Example
+
+Employee and Manager stored in same table.
+
+```sql
+CREATE TABLE employee(
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(50),
+    manager_id INT
+);
+```
+
+```sql
+SELECT e.emp_name AS Employee,
+       m.emp_name AS Manager
+FROM employee e
+LEFT JOIN employee m
+ON e.manager_id = m.emp_id;
+```
+
+---
+
+## DIFFERENCE BETWEEN PRIMARY KEY AND FOREIGN KEY
+
+| PRIMARY KEY | FOREIGN KEY |
+|------------|------------|
+| Uniquely identifies a record | Connects two tables |
+| Cannot contain NULL | Can contain NULL |
+| One per table | Multiple allowed |
+| Prevents duplicate values | Allows duplicate values |
 
 
 
