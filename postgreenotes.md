@@ -572,7 +572,353 @@ ON e.manager_id = m.emp_id;
 
 
 
+# VIEW
 
+A View is a virtual table created using a SQL query.
+
+It does not store data physically. It shows data from one or more tables.
+
+### Syntax
+
+```sql
+CREATE VIEW view_name AS
+SELECT column1, column2
+FROM table_name;
+```
+
+### Example
+
+```sql
+CREATE VIEW emp_view AS
+SELECT emp_id, emp_name, department
+FROM employees;
+```
+
+### Use View
+
+```sql
+SELECT * FROM emp_view;
+```
+
+### Delete View
+
+```sql
+DROP VIEW emp_view;
+```
+
+---
+
+# HAVING CLAUSE
+
+HAVING is used to filter grouped data.
+
+WHERE filters rows.
+
+HAVING filters groups.
+
+### Syntax
+
+```sql
+SELECT column_name,
+       COUNT(*)
+FROM table_name
+GROUP BY column_name
+HAVING condition;
+```
+
+### Example
+
+```sql
+SELECT department,
+       COUNT(*)
+FROM employees
+GROUP BY department
+HAVING COUNT(*) > 2;
+```
+
+### Difference Between WHERE and HAVING
+
+| WHERE | HAVING |
+|---------|---------|
+| Filters rows | Filters groups |
+| Used before GROUP BY | Used after GROUP BY |
+| Cannot use aggregate functions | Can use aggregate functions |
+
+---
+
+# STORED PROCEDURE
+
+A Stored Procedure is a saved SQL block that can be executed whenever needed.
+
+### Syntax
+
+```sql
+CREATE OR REPLACE PROCEDURE procedure_name()
+LANGUAGE plpgsql
+AS $$
+BEGIN
+
+    -- SQL Statements
+
+END;
+$$;
+```
+
+### Example
+
+```sql
+CREATE OR REPLACE PROCEDURE get_message()
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RAISE NOTICE 'Procedure Executed';
+END;
+$$;
+```
+
+### Execute Procedure
+
+```sql
+CALL get_message();
+```
+
+---
+
+# USER DEFINED FUNCTION (UDF)
+
+A User Defined Function is a custom function created by the user.
+
+It must return a value.
+
+### Syntax
+
+```sql
+CREATE FUNCTION function_name()
+RETURNS datatype
+AS $$
+BEGIN
+
+    RETURN value;
+
+END;
+$$ LANGUAGE plpgsql;
+```
+
+### Example
+
+```sql
+CREATE FUNCTION get_bonus(
+    salary INT
+)
+RETURNS INT
+AS $$
+BEGIN
+
+    RETURN salary * 10 / 100;
+
+END;
+$$ LANGUAGE plpgsql;
+```
+
+### Execute Function
+
+```sql
+SELECT get_bonus(50000);
+```
+
+### Output
+
+```text
+5000
+```
+
+---
+
+# WINDOW FUNCTION
+
+Window Functions perform calculations across a set of rows without grouping them.
+
+Unlike GROUP BY, they do not reduce the number of rows.
+
+### Syntax
+
+```sql
+SELECT column_name,
+       window_function()
+       OVER(...)
+FROM table_name;
+```
+
+### ROW_NUMBER()
+
+Assigns a unique number to each row.
+
+```sql
+SELECT emp_name,
+       ROW_NUMBER()
+       OVER(ORDER BY salary DESC)
+FROM employees;
+```
+
+### RANK()
+
+Assigns rank based on a condition.
+
+```sql
+SELECT emp_name,
+       salary,
+       RANK()
+       OVER(ORDER BY salary DESC)
+FROM employees;
+```
+
+### Running Total
+
+```sql
+SELECT emp_name,
+       salary,
+       SUM(salary)
+       OVER(ORDER BY emp_id)
+FROM employees;
+```
+
+---
+
+# CTE (COMMON TABLE EXPRESSION)
+
+A CTE is a temporary result set created using WITH.
+
+It makes complex queries easier to read.
+
+### Syntax
+
+```sql
+WITH cte_name AS
+(
+    query
+)
+SELECT *
+FROM cte_name;
+```
+
+### Example
+
+```sql
+WITH high_salary AS
+(
+    SELECT *
+    FROM employees
+    WHERE salary > 50000
+)
+SELECT *
+FROM high_salary;
+```
+
+### Benefits
+
+- Improves readability
+- Breaks complex queries into parts
+- Can be reused within the query
+
+---
+
+# TRIGGERS
+
+A Trigger is a block of code that executes automatically when an event occurs.
+
+### Events
+
+- INSERT
+- UPDATE
+- DELETE
+
+### Steps
+
+#### 1. Create Trigger Function
+
+```sql
+CREATE OR REPLACE FUNCTION log_message()
+RETURNS TRIGGER
+AS $$
+BEGIN
+
+    RAISE NOTICE 'New Record Inserted';
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+#### 2. Create Trigger
+
+```sql
+CREATE TRIGGER trg_insert
+AFTER INSERT
+ON employees
+FOR EACH ROW
+EXECUTE FUNCTION log_message();
+```
+
+### Working
+
+```sql
+INSERT INTO employees
+VALUES (101,'Rahul','IT',50000);
+```
+
+### Output
+
+```text
+New Record Inserted
+```
+
+---
+
+# PROCEDURE vs FUNCTION
+
+| Procedure | Function |
+|------------|------------|
+| Called using CALL | Called using SELECT |
+| Return value optional | Must return value |
+| Used for DB operations | Used for calculations |
+| Can contain COMMIT/ROLLBACK | Cannot manage transactions |
+
+---
+
+# MOST IMPORTANT WINDOW FUNCTIONS
+
+```sql
+ROW_NUMBER()
+RANK()
+DENSE_RANK()
+LEAD()
+LAG()
+SUM()
+AVG()
+COUNT()
+```
+
+---
+
+# MOST IMPORTANT INTERVIEW QUESTION
+
+### Difference Between CTE and View
+
+| CTE | View |
+|------|------|
+| Temporary | Permanent |
+| Exists for one query | Stored in database |
+| Created using WITH | Created using CREATE VIEW |
+| Improves readability | Reusable across queries |
+
+### Difference Between Trigger and Procedure
+
+| Trigger | Procedure |
+|----------|----------|
+| Executes automatically | Executes manually |
+| Attached to table events | Called using CALL |
+| INSERT/UPDATE/DELETE based | User controlled |
+| Cannot be called directly | Can be called directly |
 
 
 
